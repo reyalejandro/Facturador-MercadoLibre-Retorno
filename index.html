@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="referrer" content="no-referrer"><meta name="robots" content="noindex"><title>Facturador · Volviendo de Mercado Libre</title></head>
+<body style="font:16px system-ui,sans-serif;margin:40px">
+<h1>Retorno de Mercado Libre al Facturador</h1>
+<p>Esta página sólo devuelve una autorización iniciada desde el Facturador de esta computadora.</p>
+<p>Abrí el Facturador y tocá <strong>Conectar Mercado Libre</strong>. Si no iniciaste una conexión, podés cerrar esta pestaña.</p>
+<script>
+// Página estática (GitHub Pages): sólo reenvía code/state/error al Facturador local.
+// Sin almacenamiento ni recursos externos. GitHub recibe la URL de retorno; nunca client_secret ni tokens.
+const query=new URLSearchParams(location.search),forward=new URLSearchParams();
+history.replaceState(null,'',location.pathname);
+const state=query.get('state')||'',code=query.get('code'),error=query.get('error');
+if(['code','state','error'].every(key=>query.getAll(key).length<=1)&&/^[a-f0-9]{64}$/.test(state)&&
+   ((code&&code.length<=2048&&!error)||(error&&error.length<=2048&&!code))){
+ forward.set(code?'code':'error',code||error);forward.set('state',state);
+ location.replace('http://127.0.0.1:4319/meli/callback?'+forward);
+}
+</script>
+</body></html>
